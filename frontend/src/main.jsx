@@ -8,8 +8,8 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <div>
-      Upload: <Link to="/upload">Upload Page</Link>
-      View: <Link to="/view">View Page</Link>
+      <p>Upload: <Link to="/upload">Upload Page</Link></p>
+      <p>View: <Link to="/view">View Page</Link></p>
     </div>,
   },
 ]);
