@@ -38,6 +38,7 @@ jobs:
             fi
 
             echo "🔹 Converting $file → $outdir"
+            LD_LIBRARY_PATH=./potree_bin/PotreeConverter_linux_x64 ./potree_bin/PotreeConverter_linux_x64/PotreeConverter --help
             LD_LIBRARY_PATH=./potree_bin/PotreeConverter_linux_x64 ./potree_bin/PotreeConverter_linux_x64/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
           done
       - name: Commit and push converted point clouds
