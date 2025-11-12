@@ -1,0 +1,48 @@
+on:
+  push:
+    paths:
+      - 'data/raw/**/*.laz'
+      - 'data/raw/**/*.las'
+
+  workflow_dispatch:
+
+jobs:
+  potree-converter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Potree binary
+        run: |
+          curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
+          unzip PotreeConverter.zip -d potree_bin
+          chmod +x potree_bin/PotreeConverter
+
+      - name: Convert only new or updated raw point clouds
+        run: |
+          mkdir -p data/potree
+          find data/raw -type f \( -name "*.las" -o -name "*.laz" \) | while read file; do
+            base=$(basename "$file" | cut -d. -f1)
+            outdir="data/potree/$base"
+
+            # Skip if already converted and newer than input
+            if [ -d "$outdir" ]; then
+              raw_time=$(stat -c %Y "$file")
+              potree_time=$(find "$outdir" -type f -printf "%T@\n" | sort -n | tail -1)
+              if (( $(echo "$potree_time >= $raw_time" | bc -l) )); then
+                echo "✅ Skipping $file — already converted and up to date."
+                continue
+              fi
+            fi
+
+            echo "🔹 Converting $file → $outdir"
+            ./potree_bin/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
+          done
+      - name: Commit and push converted point clouds
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/potree
+          git commit -m "Detected new or updated point clouds, converted with PotreeConverter" || echo "No changes to commit"
+          git push
