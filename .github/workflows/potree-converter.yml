@@ -17,7 +17,7 @@ jobs:
         run: |
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
           unzip PotreeConverter.zip -d potree_bin
-          chmod +x potree_bin/PotreeConverter
+          chmod +x potree_bin/PotreeConverter_linux_x64/PotreeConverter
 
       - name: Convert only new or updated raw point clouds
         run: |
@@ -37,7 +37,7 @@ jobs:
             fi
 
             echo "🔹 Converting $file → $outdir"
-            ./potree_bin/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
+            ./potree_bin/PotreeConverter_linux_x64/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
           done
       - name: Commit and push converted point clouds
         run: |
