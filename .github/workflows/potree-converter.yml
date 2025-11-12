@@ -16,8 +16,8 @@ jobs:
       - name: Install Potree binary
         run: |
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
-          unzip PotreeConverter.zip
-          chmod +x PotreeConverter
+          unzip PotreeConverter.zip -d potree_bin
+          chmod +x potree_bin/PotreeConverter
 
       - name: Convert only new or updated raw point clouds
         run: |
