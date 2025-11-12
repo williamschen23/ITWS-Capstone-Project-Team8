@@ -15,6 +15,7 @@ jobs:
 
       - name: Install Potree binary
         run: |
+          sudo apt update && sudo apt install liblaszip-dev
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
           unzip PotreeConverter.zip -d potree_bin
           chmod +x potree_bin/PotreeConverter_linux_x64/PotreeConverter
@@ -37,7 +38,7 @@ jobs:
             fi
 
             echo "🔹 Converting $file → $outdir"
-            ./potree_bin/PotreeConverter_linux_x64/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
+            LD_LIBRARY_PATH=./potree_bin/PotreeConverter_linux_x64 ./potree_bin/PotreeConverter_linux_x64/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
           done
       - name: Commit and push converted point clouds
         run: |
