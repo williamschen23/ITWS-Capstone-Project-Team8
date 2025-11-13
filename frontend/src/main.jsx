@@ -5,6 +5,7 @@ import { createBrowserRouter, Link } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import UploadForm from "./upload";
 import Heading from "./heading";
+import PointNetPage from "./PointNetPage";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,9 @@ const router = createBrowserRouter([
         <p>
           View: <Link to="/view">View Page</Link>
         </p>
+        <p>
+          PointNet: <Link to="/PointNetPage">PointNet++ Page</Link>
+        </p>
       </div>
     ),
   },
@@ -24,6 +28,10 @@ const router = createBrowserRouter([
     path: "/upload",
     element: <UploadForm />,
   },
+  {
+    path: "/PointNetPage",
+    element: <PointNetPage />,
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
