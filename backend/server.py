@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS          # import
 import numpy as np
 import tensorflow.compat.v1 as tf
@@ -7,6 +7,7 @@ from models import pointnet_cls
 import threading
 import time
 import subprocess
+import os
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -33,6 +34,9 @@ classes = [
     'vase','wardrobe','xbox'
 ]
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+POTREE_DIR = os.path.join(BASE_DIR, 'potree')
+
 @app.route('/predict', methods=['POST'])
 def predict():
     file = request.files['file']
@@ -56,6 +60,10 @@ def predict():
         "predicted_label": classes[pred_class],
         "confidence": round(confidence * 100, 2)
     })
+
+@app.route('/potree/<path:filename>')
+def potree_static(filename):
+    return send_from_directory(POTREE_DIR, filename)
 
 def git_pull_periodically():
     while True:
