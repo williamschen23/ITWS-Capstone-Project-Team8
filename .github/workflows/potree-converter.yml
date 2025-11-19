@@ -43,7 +43,7 @@ jobs:
             fi
 
             echo "Converting $f ..."
-            potree/PotreeConverter "$f" -o "output/$base" -laz -overwrite -p page
+            LD_LIBRARY_PATH=./potree potree/PotreeConverter potree/PotreeConverter "$f" -o "output/$base" -laz -overwrite -p page
 
             # Delete redundant libs folder inside the converted pointcloud folder
             if [ -d "output/$base/libs" ]; then
