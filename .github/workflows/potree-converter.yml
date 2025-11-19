@@ -30,21 +30,20 @@ jobs:
           rm -rf PotreeConverter_linux_x64 PotreeConverter.zip
           chmod +x potree/PotreeConverter
 
-      - name: Convert each point cloud into pointclouds/<name>/ folders
+      - name: Convert each point cloud into pointclouds/<name>/ folders with page generation
         run: |
           mkdir -p data/potree/pointclouds
           for f in data/raw/*.{las,laz}; do
             [ -e "$f" ] || continue
             base=$(basename "$f" | sed 's/\.[^.]*$//')
 
-            # Skip if already converted
             if [ -d "data/potree/pointclouds/$base" ]; then
               echo "Skipping $f, already converted."
               continue
             fi
 
             echo "Converting $f → data/potree/pointclouds/$base"
-            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -laz -overwrite
+            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -laz -overwrite -p page
           done
 
           # Copy libs folder from first converted point cloud to root output if not exist
