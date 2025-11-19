@@ -43,7 +43,7 @@ jobs:
             fi
 
             echo "Converting $f → data/potree/pointclouds/$base"
-            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -laz -overwrite -p page
+            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -generate-page
           done
 
           # Copy libs folder from first converted point cloud to root output if not exist
