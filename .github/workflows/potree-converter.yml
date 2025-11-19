@@ -45,6 +45,12 @@ jobs:
             echo "Converting $f ..."
             potree/PotreeConverter "$f" -o "output/$base" -laz -overwrite -p page
 
+            # Delete redundant libs folder inside the converted pointcloud folder
+            if [ -d "output/$base/libs" ]; then
+              rm -rf "output/$base/libs"
+              echo "Removed libs folder from output/$base"
+            fi
+
             # Fix libs references to shared absolute path /potree/libs in page.html
             sed -i 's|href="libs/|href="/potree/libs/|g' output/$base/page.html
             sed -i 's|src="libs/|src="/potree/libs/|g' output/$base/page.html
