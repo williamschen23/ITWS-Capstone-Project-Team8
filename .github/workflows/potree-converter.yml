@@ -12,33 +12,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+        with: 
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Potree binary
         run: |
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
-          unzip PotreeConverter.zip -d potree_bin
-          chmod +x potree_bin/PotreeConverter_linux_x64/PotreeConverter
+          unzip PotreeConverter.zip
+          chmod +x PotreeConverter_linux_x64/PotreeConverter
 
-      - name: Convert only new or updated raw point clouds
+      - name: Convert new point cloud files to Potree format
         run: |
-          mkdir -p data/potree
-          find data/raw -type f \( -name "*.las" -o -name "*.laz" \) | while read file; do
-            base=$(basename "$file" | cut -d. -f1)
-            outdir="data/potree/$base"
-
-            # Skip if already converted and newer than input
-            if [ -d "$outdir" ]; then
-              raw_time=$(stat -c %Y "$file")
-              potree_time=$(find "$outdir" -type f -printf "%T@\n" | sort -n | tail -1)
-              if (( $(echo "$potree_time >= $raw_time" | bc -l) )); then
-                echo "✅ Skipping $file — already converted and up to date."
-                continue
-              fi
-            fi
-
-            echo "🔹 Converting $file → $outdir"
-            LD_LIBRARY_PATH=./potree_bin/PotreeConverter_linux_x64 ./potree_bin/PotreeConverter_linux_x64/PotreeConverter "$file" -o "$outdir" --generate-page "$base" --no-merge
-          done
+          PotreeConverter_linux_x64/PotreeConverter data/raw/ -o data/potree/ -laz -generate-page page_name -overwrite
+          
       - name: Upload converted Potree files as artifact
         uses: actions/upload-artifact@v4
         with:
