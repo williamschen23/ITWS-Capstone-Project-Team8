@@ -28,7 +28,7 @@ jobs:
       - name: Convert new point cloud files to Potree format
         run: |
           mkdir -p data/potree
-          potree/PotreeConverter -h
+          LD_LIBRARY_PATH=./potree potree/PotreeConverter -h
           LD_LIBRARY_PATH=./potree  potree/PotreeConverter data/raw/ -o data/potree/ -laz -generate-page page_name -overwrite
           
       - name: Upload converted Potree files as artifact
