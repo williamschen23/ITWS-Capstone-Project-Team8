@@ -6,22 +6,20 @@ permissions:
 on:
   push:
     paths:
-      - 'data/raw/**/*.laz'
-      - 'data/raw/**/*.las'
-
+      - 'data/**/*.{las,laz}'
   workflow_dispatch:
 
 jobs:
   potree-converter:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with LFS
         uses: actions/checkout@v5
         with:
           lfs: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Potree binary
+      - name: Install PotreeConverter binary
         run: |
           mkdir -p potree
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
@@ -30,58 +28,35 @@ jobs:
           rm -rf PotreeConverter_linux_x64 PotreeConverter.zip
           chmod +x potree/PotreeConverter
 
-      - name: Convert each point cloud separately with page generation
+      - name: Convert only new point clouds, keep existing ones
         run: |
-          mkdir -p data/potree/pointclouds
-          for f in data/raw/*.{las,laz}; do
+          mkdir -p public/potree/pointclouds
+          mkdir -p output
+
+          for f in data/*.{las,laz}; do
             [ -e "$f" ] || continue
             base=$(basename "$f" | sed 's/\.[^.]*$//')
 
-            if [ -d "data/potree/pointclouds/$base" ]; then
+            if [ -d "public/potree/pointclouds/$base" ]; then
               echo "Skipping $f, already converted."
               continue
             fi
 
-            echo "Converting $f → data/potree/pointclouds/$base"
-            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -generate-page
+            echo "Converting $f ..."
+            potree/PotreeConverter "$f" -o "output/$base" -laz -overwrite -p page
+
+            # Fix libs references to shared absolute path /potree/libs in page.html
+            sed -i 's|href="libs/|href="/potree/libs/|g' output/$base/page.html
+            sed -i 's|src="libs/|src="/potree/libs/|g' output/$base/page.html
+
+            # Move new conversion to public potree pointclouds
+            mv output/$base public/potree/pointclouds/
           done
-
-          # Copy libs folder from first converted point cloud to root output if not exist
-          if [ ! -d data/potree/libs ]; then
-            first=$(ls data/potree/pointclouds | head -1)
-            cp -r "data/potree/pointclouds/$first/libs" data/potree/libs
-          fi
-
-          # Remove libs folders inside pointclouds subfolders to avoid duplication
-          find data/potree/pointclouds/*/libs -type d -exec rm -rf {} +
-
-      - name: Generate or update root index.html linking all point clouds
-        run: |
-          cat > data/potree/index.html <<EOF
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Potree Viewer</title>
-            <link rel="stylesheet" type="text/css" href="libs/potree/potree.css">
-            <script src="libs/potree/potree.js"></script>
-          </head>
-          <body>
-            <h1>Available Point Clouds</h1>
-            <ul>
-          EOF
-
-          for pc in data/potree/pointclouds/*; do
-            name=$(basename "$pc")
-            echo "              <li><a href=\"pointclouds/$name/page.html\">$name</a></li>" >> data/potree/index.html
-          done
-
-          echo "            </ul>" >> data/potree/index.html
-          echo "          </body></html>" >> data/potree/index.html
 
       - name: Commit and push converted files
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/potree/
-          git commit -m "Add/update converted Potree point clouds" || echo "No changes to commit"
+          git add public/potree/pointclouds
+          git diff --cached --quiet || git commit -m "Add/update converted Potree pointclouds"
           git push origin HEAD:${{ github.ref_name }}
