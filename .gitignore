@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+env/
+
+# Model checkpoints
+*.ckpt
+*.ckpt.data-*
+*.ckpt.index
+*.ckpt.meta
+log/
+logs/
+
+# System files
+.DS_Store
+.idea/
+.vscode/
+
+# Node modules (frontend)
+frontend/node_modules/
+frontend/dist/
