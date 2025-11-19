@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir -p data/potree
           LD_LIBRARY_PATH=./potree potree/PotreeConverter -h
-          LD_LIBRARY_PATH=./potree  potree/PotreeConverter data/raw/ -o data/potree/ -laz -generate-page page_name -overwrite
+          LD_LIBRARY_PATH=./potree  potree/PotreeConverter data/raw/ -o data/potree/ -p index
           
       - name: Commit and push converted files
         run: |
