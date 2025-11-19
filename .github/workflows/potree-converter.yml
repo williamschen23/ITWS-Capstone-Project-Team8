@@ -30,7 +30,7 @@ jobs:
           rm -rf PotreeConverter_linux_x64 PotreeConverter.zip
           chmod +x potree/PotreeConverter
 
-      - name: Convert each point cloud into pointclouds/<name>/ folders with page generation
+      - name: Convert each point cloud separately with page generation
         run: |
           mkdir -p data/potree/pointclouds
           for f in data/raw/*.{las,laz}; do
@@ -53,9 +53,9 @@ jobs:
           fi
 
           # Remove libs folders inside pointclouds subfolders to avoid duplication
-          find data/potree/pointclouds -mindepth 1 -maxdepth 1 -type d -name libs -exec rm -rf {} +
+          find data/potree/pointclouds/*/libs -type d -exec rm -rf {} +
 
-      - name: Generate or update index.html referencing all point clouds
+      - name: Generate or update root index.html linking all point clouds
         run: |
           cat > data/potree/index.html <<EOF
           <!DOCTYPE html>
