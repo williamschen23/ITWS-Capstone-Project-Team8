@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-        with: 
+        with:
           lfs: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -54,11 +54,34 @@ jobs:
 
           # Remove libs folders inside pointclouds subfolders to avoid duplication
           find data/potree/pointclouds -mindepth 1 -maxdepth 1 -type d -name libs -exec rm -rf {} +
-          
+
+      - name: Generate or update index.html referencing all point clouds
+        run: |
+          cat > data/potree/index.html <<EOF
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Potree Viewer</title>
+            <link rel="stylesheet" type="text/css" href="libs/potree/potree.css">
+            <script src="libs/potree/potree.js"></script>
+          </head>
+          <body>
+            <h1>Available Point Clouds</h1>
+            <ul>
+          EOF
+
+          for pc in data/potree/pointclouds/*; do
+            name=$(basename "$pc")
+            echo "              <li><a href=\"pointclouds/$name/page.html\">$name</a></li>" >> data/potree/index.html
+          done
+
+          echo "            </ul>" >> data/potree/index.html
+          echo "          </body></html>" >> data/potree/index.html
+
       - name: Commit and push converted files
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/potree/
-          git commit -m "Add converted Potree files" || echo "No changes to commit"
+          git commit -m "Add/update converted Potree point clouds" || echo "No changes to commit"
           git push origin HEAD:${{ github.ref_name }}
