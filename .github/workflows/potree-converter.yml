@@ -30,11 +30,31 @@ jobs:
           rm -rf PotreeConverter_linux_x64 PotreeConverter.zip
           chmod +x potree/PotreeConverter
 
-      - name: Convert new point cloud files to Potree format
+      - name: Convert each point cloud into pointclouds/<name>/ folders
         run: |
-          mkdir -p data/potree
-          LD_LIBRARY_PATH=./potree potree/PotreeConverter -h
-          LD_LIBRARY_PATH=./potree  potree/PotreeConverter data/raw/ -o data/potree/ -p index
+          mkdir -p data/potree/pointclouds
+          for f in data/raw/*.{las,laz}; do
+            [ -e "$f" ] || continue
+            base=$(basename "$f" | sed 's/\.[^.]*$//')
+
+            # Skip if already converted
+            if [ -d "data/potree/pointclouds/$base" ]; then
+              echo "Skipping $f, already converted."
+              continue
+            fi
+
+            echo "Converting $f → data/potree/pointclouds/$base"
+            LD_LIBRARY_PATH=./potree potree/PotreeConverter "$f" -o "data/potree/pointclouds/$base" -laz -overwrite
+          done
+
+          # Copy libs folder from first converted point cloud to root output if not exist
+          if [ ! -d data/potree/libs ]; then
+            first=$(ls data/potree/pointclouds | head -1)
+            cp -r "data/potree/pointclouds/$first/libs" data/potree/libs
+          fi
+
+          # Remove libs folders inside pointclouds subfolders to avoid duplication
+          find data/potree/pointclouds -mindepth 1 -maxdepth 1 -type d -name libs -exec rm -rf {} +
           
       - name: Commit and push converted files
         run: |
