@@ -1,0 +1,41 @@
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 3'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 0, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 2'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 1'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 4'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 5'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 6'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 7'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 8'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 9'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 10'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 11'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 12'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 13'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 14'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 15'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 16'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 17'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 18'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 19'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 20'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 21'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting TX_BurnetCo_2006_000056.laz, first point: 22'000'000, num points: 344'920
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 0, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 1'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 2'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 3'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 4'000'000, num points: 1'000'000
+INFO(chunker_countsort_laszip.cpp:176): counting Palac_Moszna.laz, first point: 5'000'000, num points: 677'589
+INFO(indexer.cpp:1656): start indexing chunk r4646666
+filesize: 198'715'615
+min: 6437394.086796876, 5549472.2705468759, 220.91999999999999
+max: 6483673.120000001, 5595751.3037500009, 46499.953203125006
+INFO(indexer.cpp:1656): start indexing chunk r0000000
+filesize: 782'072'200
+min: 559956.87, 3374357.71, 220.91999999999999
+max: 606235.90320312511, 3420636.743203125, 46499.953203125006
+WARN(indexer.cpp:1039): Encountered unfavourable point distribution. Conversion continues anyway because not many duplicates were encountered. However, issues may arise. If you find an error, please report it at github. 
+#points in box: 5677589, #unique points in box: 5677583, min: 6482226.9002124034, 5588520.2048120126, 220.91999999999999, max: 6483673.120000001, 5589966.4245996103, 1667.1397875976566
+INFO(indexer.cpp:1699): finished indexing chunk r0000000
+INFO(indexer.cpp:1699): finished indexing chunk r4646666
