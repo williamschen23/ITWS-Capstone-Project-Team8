@@ -6,8 +6,8 @@ export default function PotreePage() {
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden app-surface text-foreground">
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-6 h-full">
-        <div className="app-frame p-8 h-full flex items-center justify-center">
+      <div className="max-w-[98%] mx-auto px-3 md:px-4 py-4 h-full">
+        <div className="app-frame p-3 md:p-4 h-full flex items-center justify-center">
           <div className="w-full h-full">
             <PotreeViewer pointcloudName={pointcloudName} />
           </div>
