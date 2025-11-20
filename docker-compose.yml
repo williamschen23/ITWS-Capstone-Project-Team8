@@ -1,0 +1,46 @@
+services:
+  # Backend Flask API (Development Mode)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pointcloud-backend-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount entire backend for hot reload
+      - ./backend:/app
+      - /app/venv  # Exclude venv from mount
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - pointcloud-network
+    command: python server.py
+
+  # Frontend React (Development Mode with Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pointcloud-frontend-dev
+    ports:
+      - "5173:5173"  # Vite dev server
+    volumes:
+      # Mount source for hot reload
+      - ./frontend:/app
+      - /app/node_modules  # Exclude node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - pointcloud-network
+    command: npm run dev -- --host
+
+networks:
+  pointcloud-network:
+    driver: bridge

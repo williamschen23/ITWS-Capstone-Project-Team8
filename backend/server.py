@@ -72,5 +72,9 @@ def git_pull_periodically():
         time.sleep(60)
 
 if __name__ == '__main__':
+    # Start git pull in all environments
     threading.Thread(target=git_pull_periodically, daemon=True).start()
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    
+    # Enable debug mode based on environment
+    debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    app.run(debug=debug_mode, host='0.0.0.0', port=8080)
