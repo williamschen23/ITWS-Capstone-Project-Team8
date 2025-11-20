@@ -33,5 +33,3 @@ docker compose up --build
 
 - Code changes auto-reload
 - No need to restart containers when editing files
-
-
