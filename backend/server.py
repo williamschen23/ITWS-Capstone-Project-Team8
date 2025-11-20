@@ -17,14 +17,14 @@ MODEL_PATH = 'log/model.ckpt'
 NUM_POINTS = 2048
 NUM_CLASSES = 40
 
-# pointclouds_pl = tf.placeholder(tf.float32, shape=(1, NUM_POINTS, 3))
-# is_training_pl = tf.placeholder(tf.bool, shape=())
-# pred, _ = pointnet_cls.get_model(pointclouds_pl, is_training_pl)
-# pred_softmax = tf.nn.softmax(pred)
+pointclouds_pl = tf.placeholder(tf.float32, shape=(1, NUM_POINTS, 3))
+is_training_pl = tf.placeholder(tf.bool, shape=())
+pred, _ = pointnet_cls.get_model(pointclouds_pl, is_training_pl)
+pred_softmax = tf.nn.softmax(pred)
 
-# saver = tf.train.Saver()
-# sess = tf.Session()
-# saver.restore(sess, MODEL_PATH)
+saver = tf.train.Saver()
+sess = tf.Session()
+saver.restore(sess, MODEL_PATH)
 
 classes = [
     'airplane','bathtub','bed','bench','bookshelf','bottle','bowl','car','chair','cone',

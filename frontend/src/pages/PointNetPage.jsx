@@ -71,12 +71,12 @@ const PointNetPage = () => {
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden app-surface text-[color:var(--foreground)]">
       {/* Framed Container */}
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-6 h-full">
-        <div className="app-frame p-6 md:p-8 h-full">
+      <div className="max-w-[98%] mx-auto px-3 md:px-4 py-4 h-full">
+        <div className="app-frame p-3 md:p-4 h-full">
       {/* Main Content */}
       <div className="flex flex-col lg:flex-row h-full">
         {/* LEFT: 3D Visualization (70%) */}
-        <div className="flex-[7] p-6 lg:p-8">
+        <div className="flex-[7] p-2 lg:p-3">
           <div className="h-full rounded-2xl card-elevated bg-white overflow-hidden relative">
             {/* Subtle grid overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#e5e7eb_1px,transparent_1px),linear-gradient(to_bottom,#e5e7eb_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-40 pointer-events-none"></div>
@@ -174,17 +174,17 @@ const PointNetPage = () => {
         </div>
 
         {/* RIGHT: Upload & Classification Panel (30%) */}
-        <div className="flex-[3] p-6 lg:p-8 lg:pl-0">
-          <div className="h-full rounded-2xl card-elevated bg-white p-8 flex flex-col">
+        <div className="flex-[3] p-2 lg:p-3 lg:pl-0">
+          <div className="h-full rounded-2xl card-elevated bg-white p-4 flex flex-col overflow-y-auto">
             
             {/* Upload Section */}
-            <div className="space-y-6">
+            <div className="space-y-4 flex-shrink-0">
               <div>
                 <h2 className="text-xl font-semibold mb-2 flex items-center gap-3">
                   <span className="w-1 h-6 bg-gradient-to-b from-[var(--blue-primary)] to-[var(--blue-muted)] rounded-full"></span>
                   Upload & Classify
                 </h2>
-                <p className="text-sm text-[color:var(--foreground)]/60">Upload a point cloud file for AI classification</p>
+                <p className="text-sm text-[color:var(--foreground)]/60">Upload your point cloud file</p>
               </div>
 
               {/* Drag & Drop Zone */}
@@ -192,23 +192,23 @@ const PointNetPage = () => {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-8 transition-all duration-300 ${
+                className={`relative border-2 border-dashed rounded-xl p-4 transition-all duration-300 ${
                   isDragging
                     ? "border-[var(--blue-primary)] bg-[var(--blue-primary)]/5 shadow-lg shadow-indigo-500/20"
                     : "border-neutral-300 bg-[#F9FAFB] hover:border-neutral-400"
                 }`}
               >
-                <div className="text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 rounded-xl bg-[var(--muted)] flex items-center justify-center">
-                    <svg className="w-8 h-8 text-[var(--blue-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center space-y-2">
+                  <div className="mx-auto w-10 h-10 rounded-xl bg-[var(--muted)] flex items-center justify-center">
+                    <svg className="w-5 h-5 text-[var(--blue-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[color:var(--foreground)]/80 font-medium mb-1">
+                    <p className="text-sm text-[color:var(--foreground)]/80 font-medium mb-0.5">
                       Drag & drop your file here
                     </p>
-                    <p className="text-sm text-[color:var(--foreground)]/60">or click to browse</p>
+                    <p className="text-xs text-[color:var(--foreground)]/60">or click to browse</p>
                   </div>
                   <input
                     type="file"
@@ -245,10 +245,10 @@ const PointNetPage = () => {
 
             {/* Results Card */}
             {!isLoading && prediction && (
-              <div className="mt-8 space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-500">
+              <div className="mt-4 space-y-3 animate-in fade-in slide-in-from-bottom-6 duration-500 flex-shrink-0">
                 <div className="h-px bg-gradient-to-r from-transparent via-neutral-300 to-transparent"></div>
                 
-                <div className="p-6 rounded-xl card-elevated bg-white space-y-5">
+                <div className="p-4 rounded-xl card-elevated bg-white space-y-3 overflow-hidden">
                   <h3 className="text-sm font-semibold text-[color:var(--foreground)]/60 uppercase tracking-wider">Classification Results</h3>
                   
                   {/* Predicted Label */}

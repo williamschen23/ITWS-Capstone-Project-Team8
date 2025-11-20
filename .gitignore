@@ -10,12 +10,12 @@ venv/
 env/
 
 # Model checkpoints
-*.ckpt
-*.ckpt.data-*
-*.ckpt.index
-*.ckpt.meta
-log/
-logs/
+# *.ckpt
+# *.ckpt.data-*
+# *.ckpt.index
+# *.ckpt.meta
+# log/
+# logs/
 
 # System files
 .DS_Store
