@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, Link } from "react-router";
 import { RouterProvider } from "react-router/dom";
-import PotreePage from "./upload";
-import PointNetPage from "./PointNetPage";
+import PotreePage from "./pages/PotreePage";
+import PointNetPage from "./pages/PointNetPage";
 import Navbar from "./components/Navbar";
 
 const router = createBrowserRouter([

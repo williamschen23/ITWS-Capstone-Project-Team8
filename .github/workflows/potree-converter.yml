@@ -1,48 +1,68 @@
+name: Potree Converter Workflow
+
+permissions:
+  contents: write
+
 on:
   push:
     paths:
-      - 'data/raw/**/*.laz'
-      - 'data/raw/**/*.las'
-
+      - 'data/**/*.{las,laz}'
   workflow_dispatch:
 
 jobs:
   potree-converter:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with LFS
         uses: actions/checkout@v5
+        with:
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Potree binary
+      - name: Install PotreeConverter binary
         run: |
+          mkdir -p potree
           curl -L -o PotreeConverter.zip https://github.com/potree/PotreeConverter/releases/download/2.1.1/PotreeConverter_2.1.1_x64_linux.zip
-          unzip PotreeConverter.zip -d potree_bin
-          chmod +x potree_bin/PotreeConverter
+          unzip PotreeConverter.zip
+          mv PotreeConverter_linux_x64/* potree/
+          rm -rf PotreeConverter_linux_x64 PotreeConverter.zip
+          chmod +x potree/PotreeConverter
 
-      - name: Convert only new or updated raw point clouds
+      - name: Convert only new point clouds, keep existing ones
         run: |
-          mkdir -p data/potree
-          find data/raw -type f \( -name "*.las" -o -name "*.laz" \) | while read file; do
-            base=$(basename "$file" | cut -d. -f1)
-            outdir="data/potree/$base"
+          mkdir -p frontend/public/potree/pointclouds
+          mkdir -p output
 
-            # Skip if already converted and newer than input
-            if [ -d "$outdir" ]; then
-              raw_time=$(stat -c %Y "$file")
-              potree_time=$(find "$outdir" -type f -printf "%T@\n" | sort -n | tail -1)
-              if (( $(echo "$potree_time >= $raw_time" | bc -l) )); then
-                echo "✅ Skipping $file — already converted and up to date."
-                continue
-              fi
+          for f in data/*.{las,laz}; do
+            [ -e "$f" ] || continue
+            base=$(basename "$f" | sed 's/\.[^.]*$//')
+
+            if [ -d "frontend/public/potree/pointclouds/$base" ]; then
+              echo "Skipping $f, already converted."
+              continue
             fi
 
-            echo "🔹 Converting $file → $outdir"
-            ./potree_bin/PotreeConverter "$file" -o "$outdir" --generate-page "$base"
+            echo "Converting $f ..."
+            LD_LIBRARY_PATH=./potree potree/PotreeConverter potree/PotreeConverter "$f" -o "output/$base" -laz -overwrite -p page
+
+            # Delete redundant libs folder inside the converted pointcloud folder
+            if [ -d "output/$base/libs" ]; then
+              rm -rf "output/$base/libs"
+              echo "Removed libs folder from output/$base"
+            fi
+
+            # Fix libs references to shared absolute path /potree/libs in page.html
+            sed -i 's|href="libs/|href="/potree/libs/|g' output/$base/page.html
+            sed -i 's|src="libs/|src="/potree/libs/|g' output/$base/page.html
+
+            # Move new conversion to public potree pointclouds
+            mv output/$base frontend/public/potree/pointclouds/
           done
-      - name: Commit and push converted point clouds
+
+      - name: Commit and push converted files
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add data/potree
-          git commit -m "Detected new or updated point clouds, converted with PotreeConverter" || echo "No changes to commit"
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add frontend/public/potree/pointclouds
+          git diff --cached --quiet || git commit -m "Add/update converted Potree pointclouds"
+          git push origin HEAD:${{ github.ref_name }}
