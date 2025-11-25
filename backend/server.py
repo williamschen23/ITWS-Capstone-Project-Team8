@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS          # import
+import json
+from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask_cors import CORS
 import numpy as np
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 from models import pointnet_cls
-import threading
-import time
 import subprocess
 import os
+from worker import meta_path, start_worker, RAW_DIR, POINTCLOUD_DIR, write_meta, Job, job_queue
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -34,9 +34,6 @@ classes = [
     'vase','wardrobe','xbox'
 ]
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-POTREE_DIR = os.path.join(BASE_DIR, 'potree')
-
 @app.route('/predict', methods=['POST'])
 def predict():
     file = request.files['file']
@@ -61,20 +58,76 @@ def predict():
         "confidence": round(confidence * 100, 2)
     })
 
-@app.route('/potree/<path:filename>')
-def potree_static(filename):
-    return send_from_directory(POTREE_DIR, filename)
+@app.route('/potree/libs/<path:filename>')
+def potree_libs(filename):
+    potree_libs_dir = os.path.join(os.path.dirname(__file__), 'potree', 'libs')
+    return send_from_directory(potree_libs_dir, filename)
 
-def git_pull_periodically():
-    while True:
-        subprocess.run(['git', 'pull'])
-        # every 60 seconds
-        time.sleep(60)
+@app.route('/pointclouds/<cloud_name>/<path:filename>')
+def pointcloud_file(cloud_name, filename):
+    base_dir = os.path.join(os.path.dirname(__file__), 'data', 'pointclouds', cloud_name)
+    return send_from_directory(base_dir, filename)
+
+@app.route('/viewer/<cloud_name>')
+def viewer(cloud_name):
+    pointcloud_url = f'/pointclouds/{cloud_name}/metadata.json'
+    return render_template('viewer.html', pointcloud_url=pointcloud_url, cloud_name=cloud_name)
+
+@app.route("/api/pointclouds", methods=["GET"])
+def list_pointclouds():
+    status_map = {}
+
+    for name in os.listdir(POINTCLOUD_DIR):
+        mp = meta_path(name)
+        if os.path.exists(mp):
+            with open(mp) as f:
+                meta = json.load(f)
+                status = meta.get("status", "unknown")
+                status_map.setdefault(status, []).append(name)
+
+    return jsonify(status_map)
+
+
+@app.route("/api/pointclouds/upload", methods=["POST"])
+def upload_pointcloud():
+    file = request.files.get("file")
+    name = request.form.get("name")
+    description = request.form.get("description")
+
+    if not file or not name:
+        return jsonify({"error": "Missing file or name"}), 400
+
+    pc_dir = os.path.join(POINTCLOUD_DIR, name)
+    if os.path.exists(pc_dir):
+        return jsonify({"error": "A pointcloud with this name already exists"}), 400
+
+    if file.filename.split('.')[-1].lower() != 'laz':
+        return jsonify({"error": "Only .laz files are supported"}), 400
+
+    # Save raw file
+    raw_path = os.path.join(RAW_DIR, f"{name}.laz")
+    file.save(raw_path)
+
+    # Create folder
+    os.makedirs(pc_dir)
+
+    # Create meta.json
+    meta = {
+        "name": name,
+        "description": description,
+        "status": "pending"
+    }
+    write_meta(name, meta)
+
+    # Queue job
+    job_queue.put(Job(name))
+
+    return jsonify({"message": "Upload successful", "name": name})
 
 if __name__ == '__main__':
-    # Start git pull in all environments
-    threading.Thread(target=git_pull_periodically, daemon=True).start()
-    
     # Enable debug mode based on environment
     debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
+    start_worker()
+    os.makedirs(RAW_DIR, exist_ok=True)
+    os.makedirs(POINTCLOUD_DIR, exist_ok=True) 
     app.run(debug=debug_mode, host='0.0.0.0', port=8080)

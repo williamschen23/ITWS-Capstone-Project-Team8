@@ -26,5 +26,5 @@ env/
 frontend/node_modules/
 frontend/dist/
 
-# Temporary PotreeConverter gitignore
-backend/potree
+# data gitignore
+backend/data
