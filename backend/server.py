@@ -5,7 +5,6 @@ import numpy as np
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 from models import pointnet_cls
-import subprocess
 import os
 from worker import meta_path, start_worker, RAW_DIR, POINTCLOUD_DIR, write_meta, Job, job_queue
 
