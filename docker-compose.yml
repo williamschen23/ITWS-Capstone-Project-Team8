@@ -33,7 +33,7 @@ services:
       - ./frontend:/app
       - /app/node_modules  # Exclude node_modules
     environment:
-      - VITE_API_URL=http://localhost:8080
+      - VITE_API_URL=${VITE_API_URL:-"http://127.0.0.1:8080"}
     depends_on:
       - backend
     restart: unless-stopped
