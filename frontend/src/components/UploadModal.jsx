@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BASE_API_URL } from "../scripts/config.js";
 
 export default function UploadModal({ isOpen, onClose, onUpload }) {
   const [name, setName] = useState("");
@@ -26,7 +27,7 @@ export default function UploadModal({ isOpen, onClose, onUpload }) {
 
     try {
       setUploading(true);
-      const response = await fetch("http://localhost:8080/api/pointclouds/upload", {
+      const response = await fetch(`${BASE_API_URL}/api/pointclouds/upload`, {
         method: "POST",
         body: formData,
       });

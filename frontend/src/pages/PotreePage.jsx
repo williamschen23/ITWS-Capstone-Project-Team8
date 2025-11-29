@@ -2,6 +2,7 @@ import { useState , useEffect } from "react";
 import PotreeViewer from "../components/PotreeViewer.jsx";
 import UploadModal from "../components/UploadModal.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
+import { BASE_API_URL } from "../scripts/config.js";
 
 export default function PotreePage() {
   const [pointClouds, setPointClouds] = useState({}); // now an object { status: [names] }
@@ -10,7 +11,7 @@ export default function PotreePage() {
 
   async function fetchPointClouds() {
     try {
-      const response = await fetch("http://localhost:8080/api/pointclouds");
+      const response = await fetch(`${BASE_API_URL}/api/pointclouds`);
       const data = await response.json();
       setPointClouds(data);
     } catch (error) {

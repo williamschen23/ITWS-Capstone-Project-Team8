@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Plot from "react-plotly.js";
+import { BASE_API_URL } from "../scripts/config.js";
 
 const PointNetPage = () => {
   const [points, setPoints] = useState([]);
@@ -27,7 +28,7 @@ const PointNetPage = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("http://127.0.0.1:8080/predict", {
+      const res = await fetch(`${BASE_API_URL}/predict`, {
         method: "POST",
         body: formData,
       });
