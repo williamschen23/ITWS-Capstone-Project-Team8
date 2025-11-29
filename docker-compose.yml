@@ -11,6 +11,7 @@ services:
       # Mount entire backend for hot reload
       - ./backend:/app
       - /app/venv  # Exclude venv from mount
+      - ./backend/data:/app/data  # Persist data
     environment:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
