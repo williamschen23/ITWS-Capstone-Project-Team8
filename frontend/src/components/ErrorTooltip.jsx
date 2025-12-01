@@ -1,33 +1,45 @@
-import { useState, useRef, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export default function ErrorTooltip({ error }) {
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [placeAbove, setPlaceAbove] = useState(true);
   const iconRef = useRef(null);
+  const tooltipRef = useRef(null);
 
   useEffect(() => {
     function updatePosition() {
       if (!iconRef.current) return;
 
-      const rect = iconRef.current.getBoundingClientRect();
+      const iconRect = iconRef.current.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset;
+      const scrollX = window.scrollX || window.pageXOffset;
+
+      const estimatedTooltipHeight = tooltipRef.current
+        ? tooltipRef.current.offsetHeight
+        : 80; // fallback height in px
+
+      // Decide if tooltip should be placed above or below icon
+      const canPlaceAbove = iconRect.top > estimatedTooltipHeight + 10; // 10px margin
+
+      setPlaceAbove(canPlaceAbove);
 
       setPos({
-        top: window.scrollY + rect.top - 8, // 8px above the icon
-        left: window.scrollX + rect.left + rect.width / 2,
+        top: scrollY + (canPlaceAbove ? iconRect.top : iconRect.bottom),
+        left: scrollX + iconRect.left + iconRect.width / 2,
       });
     }
 
     if (visible) {
       updatePosition();
-
-      window.addEventListener('scroll', updatePosition);
-      window.addEventListener('resize', updatePosition);
+      window.addEventListener("scroll", updatePosition);
+      window.addEventListener("resize", updatePosition);
     }
 
     return () => {
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
     };
   }, [visible]);
 
@@ -59,34 +71,40 @@ export default function ErrorTooltip({ error }) {
       {visible &&
         createPortal(
           <div
+            ref={tooltipRef}
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: pos.top,
               left: pos.left,
-              transform: 'translate(-50%, -100%)',
-              width: '16rem', // w-64 in tailwind is 16rem
-              padding: '0.5rem',
-              backgroundColor: '#dc2626', // Tailwind red-600
-              color: 'white',
-              fontSize: '0.875rem',
-              borderRadius: '0.375rem', // rounded
-              boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)',
-              whiteSpace: 'normal',
+              transform: placeAbove
+                ? "translate(-50%, -100%)"
+                : "translate(-50%, 0)",
+              width: "16rem",
+              padding: "0.5rem",
+              backgroundColor: "#dc2626",
+              color: "white",
+              fontSize: "0.875rem",
+              borderRadius: "0.375rem",
+              boxShadow:
+                "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)",
+              whiteSpace: "normal",
               zIndex: 9999,
-              pointerEvents: 'none',
-              wordBreak: 'break-word',
+              pointerEvents: "none",
+              wordBreak: "break-word",
+              userSelect: "none",
             }}
           >
             {error}
             <div
               style={{
-                position: 'absolute',
-                bottom: '-6px',
-                left: '50%',
-                transform: 'translateX(-50%) rotate(45deg)',
-                width: '12px',
-                height: '12px',
-                backgroundColor: '#dc2626',
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%) rotate(45deg)",
+                width: "12px",
+                height: "12px",
+                backgroundColor: "#dc2626",
+                bottom: placeAbove ? "-6px" : "auto",
+                top: placeAbove ? "auto" : "-6px",
               }}
             />
           </div>,
