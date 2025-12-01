@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 
-export default function ErrorTooltip({ error }) {
+export default function ToolTip({ type, message }) {
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const [placeAbove, setPlaceAbove] = useState(true);
@@ -50,13 +50,13 @@ export default function ErrorTooltip({ error }) {
         className="relative inline-block"
         onMouseEnter={() => setVisible(true)}
         onMouseLeave={() => setVisible(false)}
-        aria-label="Error info"
+        aria-label={`${type} info`}
         role="img"
       >
         {/* Info icon */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-red-600 cursor-pointer"
+          className={`h-5 w-5 ${type === "error" ? "text-red-600" : "text-blue-600"} cursor-pointer`}
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -94,7 +94,7 @@ export default function ErrorTooltip({ error }) {
               userSelect: "none",
             }}
           >
-            {error}
+            {message}
             <div
               style={{
                 position: "absolute",

@@ -4,6 +4,7 @@ import UploadModal from "../components/UploadModal.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
 import { BASE_API_URL } from "../scripts/config.js";
 import ErrorTooltip from "@/components/ErrorTooltip.jsx";
+import ToolTip from "@/components/ErrorTooltip.jsx";
 
 export default function PotreePage() {
   const [pointClouds, setPointClouds] = useState({});
@@ -59,10 +60,11 @@ export default function PotreePage() {
 
   // Convert API shape: {status: [[name, error], ...]} -> [{name, status, error}, ...]
   const pointCloudList = Object.entries(pointClouds).flatMap(([status, entries]) =>
-    entries.map(([name, error]) => ({
+    entries.map(([name, error, description]) => ({
       name,
       status,
       error,
+      description,
     }))
   );
 
@@ -80,7 +82,7 @@ export default function PotreePage() {
               <p className="p-4 text-gray-500">No point clouds available.</p>
             ) : (
               <ul>
-                {pointCloudList.map(({ name, status, error }) => (
+                {pointCloudList.map(({ name, status, error, description }) => (
                   <li
                     key={name}
                     className={`
@@ -99,7 +101,8 @@ export default function PotreePage() {
                     <div className="flex items-center space-x-2">
                       <StatusBadge status={status} />
 
-                      {error && <ErrorTooltip error={error} />}
+                      {error && <ToolTip type="error" message={error} />}
+                      {!error && description && <ToolTip type="info" message={description} />}
 
                       <button
                         onClick={(e) => {
