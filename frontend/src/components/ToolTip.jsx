@@ -81,7 +81,7 @@ export default function ToolTip({ type, message }) {
                 : "translate(-50%, 0)",
               width: "16rem",
               padding: "0.5rem",
-              backgroundColor: "#dc2626",
+              backgroundColor: type === "error" ? "#dc2626" : "#2563eb",
               color: "white",
               fontSize: "0.875rem",
               borderRadius: "0.375rem",
@@ -102,7 +102,7 @@ export default function ToolTip({ type, message }) {
                 transform: "translateX(-50%) rotate(45deg)",
                 width: "12px",
                 height: "12px",
-                backgroundColor: "#dc2626",
+                backgroundColor: type === "error" ? "#dc2626" : "#2563eb",
                 bottom: placeAbove ? "-6px" : "auto",
                 top: placeAbove ? "auto" : "-6px",
               }}
