@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine AS build
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -8,19 +8,6 @@ RUN npm ci
 
 COPY . .
 RUN npm run build
-
-
-# Production stage (still Node)
-FROM node:24-alpine
-
-WORKDIR /app
-
-# Only copy the dist directory + minimal package files
-COPY --from=build /app/dist ./dist
-COPY package*.json ./
-
-# Install ONLY production deps needed for preview server
-RUN npm ci
 
 EXPOSE 4173
 
