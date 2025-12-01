@@ -49,8 +49,10 @@ export default function PotreePage() {
                   <li
                     key={name}
                     className={`cursor-pointer px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
-                      }`}
-                    onClick={() => { if (status === 'successful') setSelectedPointCloud(name) }}
+                      } ${status !== "successful" ? "opacity-50 cursor-not-allowed" : ""}`}
+                    onClick={() => {
+                      if (status === "successful") { setSelectedPointCloud(name); }
+                    }}
                   >
                     <span>{name}</span>
                     <StatusBadge status={status} />
