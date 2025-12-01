@@ -4,6 +4,42 @@ import UploadModal from "../components/UploadModal.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
 import { BASE_API_URL } from "../scripts/config.js";
 
+function ErrorTooltip({ error }) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <div
+      className="relative inline-block"
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+    >
+      {/* Info icon */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-red-600 cursor-pointer"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+        aria-label="Error info"
+        role="img"
+      >
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth={2} fill="none" />
+        <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth={2} />
+        <circle cx="12" cy="16" r="1" fill="currentColor" />
+      </svg>
+
+      {/* Tooltip box */}
+      {visible && (
+        <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 w-64 p-2 bg-red-600 text-white text-sm rounded shadow-lg whitespace-normal break-words z-50 pointer-events-none">
+          {error}
+          <div className="absolute left-1/2 transform -translate-x-1/2 translate-y-full w-3 h-3 bg-red-600 rotate-45"></div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function PotreePage() {
   const [pointClouds, setPointClouds] = useState({});
   const [selectedPointCloud, setSelectedPointCloud] = useState(null);
@@ -87,7 +123,6 @@ export default function PotreePage() {
                       ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""}
                       ${status !== "successful" ? "opacity-50 cursor-default" : "cursor-pointer"}
                     `}
-                    title={error ? `Error: ${error}` : ""}
                     onClick={() => {
                       if (status === "successful") {
                         setSelectedPointCloud(name);
@@ -98,6 +133,8 @@ export default function PotreePage() {
 
                     <div className="flex items-center space-x-2">
                       <StatusBadge status={status} />
+
+                      {error && <ErrorTooltip error={error} />}
 
                       <button
                         onClick={(e) => {
