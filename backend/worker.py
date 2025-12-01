@@ -36,6 +36,7 @@ def update_status(name, status, error=None):
     write_meta(name, meta)
 
 def run_potree_conversion(name):
+    print(f"[Worker] Starting PotreeConverter for {name}...")
     try:
         update_status(name, "processing", error=None)
 
