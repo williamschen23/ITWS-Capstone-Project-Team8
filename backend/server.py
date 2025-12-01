@@ -6,6 +6,7 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 from models import pointnet_cls
 import os
+import shutil
 from worker import meta_path, start_worker, RAW_DIR, POINTCLOUD_DIR, write_meta, Job, job_queue
 
 app = Flask(__name__)
@@ -122,6 +123,27 @@ def upload_pointcloud():
     job_queue.put(Job(name))
 
     return jsonify({"message": "Upload successful", "name": name})
+
+@app.route('/api/pointclouds/delete', methods=['POST'])
+def delete_pointcloud():
+    data = request.get_json()
+    name = data.get('name')
+
+    if not name:
+        return jsonify({"error": "Missing pointcloud name"}), 400
+
+    pc_dir = os.path.join(POINTCLOUD_DIR, name)
+    raw_path = os.path.join(RAW_DIR, f"{name}.laz")
+
+    # Remove the pointcloud directory if it exists
+    if os.path.exists(pc_dir) and os.path.isdir(pc_dir):
+        shutil.rmtree(pc_dir)
+
+    # Remove the raw file if it exists
+    if os.path.exists(raw_path) and os.path.isfile(raw_path):
+        os.remove(raw_path)
+
+    return jsonify({"message": "Pointcloud deleted", "name": name})
 
 if __name__ == '__main__':
     # Enable debug mode based on environment
