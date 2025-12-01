@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import PotreeViewer from "../components/PotreeViewer.jsx";
 import UploadModal from "../components/UploadModal.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
@@ -48,10 +48,9 @@ export default function PotreePage() {
                 {pointCloudList.map(({ name, status }) => (
                   <li
                     key={name}
-                    className={`cursor-pointer px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${
-                      selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
-                    }`}
-                    onClick={() => setSelectedPointCloud(name)}
+                    className={`cursor-pointer px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
+                      }`}
+                    onClick={() => { if (status === 'successful') setSelectedPointCloud(name) }}
                   >
                     <span>{name}</span>
                     <StatusBadge status={status} />
