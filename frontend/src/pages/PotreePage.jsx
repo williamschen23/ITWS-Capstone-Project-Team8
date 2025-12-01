@@ -57,7 +57,7 @@ export default function PotreePage() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Convert API shape: {status: [[name, error], ...]} → unified list
+  // Convert API shape: {status: [[name, error], ...]} -> [{name, status, error}, ...]
   const pointCloudList = Object.entries(pointClouds).flatMap(([status, entries]) =>
     entries.map(([name, error]) => ({
       name,
