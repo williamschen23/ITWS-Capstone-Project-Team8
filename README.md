@@ -45,5 +45,5 @@ docker compose -f docker-compose.prod.yml up --build -d
 
 In order to customize domain for deployment:
 - Run the docker command
-- Make a `.env` file in the root of the directory
-- Add `VITE_API_URL=domain` into the `.env` file
+- Make a `.env` file inside of `frontend`, like `frontend/.env`
+- Add `VITE_API_URL=domain:8080` into the `frontend/.env` file
