@@ -3,7 +3,7 @@ import PotreeViewer from "@/components/PotreeViewer.jsx";
 import UploadModal from "@/components/UploadModal.jsx";
 import StatusBadge from "@/components/StatusBadge.jsx";
 import { BASE_API_URL } from "../scripts/config.js";
-import ToolTip from "@/components/Tooltip.jsx";
+import ToolTip from "@/components/ToolTip.jsx";
 
 export default function PotreePage() {
   const [pointClouds, setPointClouds] = useState({});
