@@ -5,7 +5,7 @@ import StatusBadge from "../components/StatusBadge.jsx";
 import { BASE_API_URL } from "../scripts/config.js";
 
 export default function PotreePage() {
-  const [pointClouds, setPointClouds] = useState({}); // now an object { status: [names] }
+  const [pointClouds, setPointClouds] = useState({});
   const [selectedPointCloud, setSelectedPointCloud] = useState(null);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
 
@@ -37,10 +37,8 @@ export default function PotreePage() {
         return false;
       }
 
-      // Refresh the list after delete
       await fetchPointClouds();
 
-      // Clear selection if it was the deleted one
       if (selectedPointCloud === name) {
         setSelectedPointCloud(null);
       }
@@ -54,21 +52,24 @@ export default function PotreePage() {
 
   useEffect(() => {
     fetchPointClouds();
-
     const intervalId = setInterval(fetchPointClouds, 10000);
     return () => clearInterval(intervalId);
   }, []);
 
-  // Flatten the status-object into an array with status info: [{name, status}, ...]
-  const pointCloudList = Object.entries(pointClouds).flatMap(([status, names]) =>
-    names.map((name) => ({ name, status }))
+  // Convert API shape: {status: [[name, error], ...]} → unified list
+  const pointCloudList = Object.entries(pointClouds).flatMap(([status, entries]) =>
+    entries.map(([name, error]) => ({
+      name,
+      status,
+      error,
+    }))
   );
 
   return (
     <div className="h-[calc(100vh-4rem)] overflow-hidden app-surface text-foreground">
       <div className="max-w-[98%] mx-auto px-3 md:px-4 py-4 h-full">
         <div className="app-frame p-3 md:p-4 h-full flex">
-          {/* Left Sidebar */}
+          {/* Sidebar */}
           <aside className="w-64 bg-gray-100 border border-gray-300 rounded-md overflow-y-auto relative">
             <h2 className="p-4 font-semibold text-lg border-b border-gray-300">
               Point Clouds
@@ -78,11 +79,15 @@ export default function PotreePage() {
               <p className="p-4 text-gray-500">No point clouds available.</p>
             ) : (
               <ul>
-                {pointCloudList.map(({ name, status }) => (
+                {pointCloudList.map(({ name, status, error }) => (
                   <li
                     key={name}
-                    className={`px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
-                      } ${status !== "successful" ? "opacity-50 cursor-default" : "cursor-pointer"}`}
+                    className={`
+                      px-4 py-2 flex justify-between items-center hover:bg-gray-300
+                      ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""}
+                      ${status !== "successful" ? "opacity-50 cursor-default" : "cursor-pointer"}
+                    `}
+                    title={error ? `Error: ${error}` : ""}
                     onClick={() => {
                       if (status === "successful") {
                         setSelectedPointCloud(name);
@@ -108,7 +113,6 @@ export default function PotreePage() {
                       </button>
                     </div>
                   </li>
-
                 ))}
               </ul>
             )}
@@ -121,7 +125,7 @@ export default function PotreePage() {
             </button>
           </aside>
 
-          {/* Right Content Area */}
+          {/* Main Panel */}
           <main className="flex-1 ml-4 bg-white rounded-md relative">
             {!selectedPointCloud ? (
               <div className="flex items-center justify-center h-full text-gray-500 text-xl">

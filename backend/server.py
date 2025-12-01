@@ -83,7 +83,8 @@ def list_pointclouds():
             with open(mp) as f:
                 meta = json.load(f)
                 status = meta.get("status", "unknown")
-                status_map.setdefault(status, []).append(name)
+                error = meta.get("error", None)
+                status_map.setdefault(status, []).append((name, error))
 
     return jsonify(status_map)
 
