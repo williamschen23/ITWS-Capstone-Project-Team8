@@ -6,9 +6,14 @@
 
 ## Quick Start
 
-### 1. Build and Start (Development Mode with Hot Reload)
+### 1. Build and Start
+## (Development Mode with Hot Reload)
 ```bash
 docker-compose up --build
+```
+## Production Mode
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
 ### 2. Access the Application
