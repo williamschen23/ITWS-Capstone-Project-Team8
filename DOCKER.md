@@ -107,4 +107,4 @@ docker-compose up --build
 - Code changes automatically reload in containers
 - Data volumes are mounted so point clouds persist
 - Model checkpoints in `backend/log/` are preserved
-- Potree files in `backend/potree/` are accessible
+- Potree files in `data/` are accessible
