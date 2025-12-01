@@ -59,7 +59,7 @@ def run_potree_conversion(name):
 
         if result.returncode != 0:
             print(f"[Worker] PotreeConverter failed for {name}: {result.stderr}")
-            update_status(name, "error", error=result.stderr.strip())
+            update_status(name, "error", error=f"stdout: {result.stdout.strip()}\nstderr: {result.stderr.strip()}")
         else:
             print(f"[Worker] Conversion complete: {name}")
             update_status(name, "successful", error=None)
