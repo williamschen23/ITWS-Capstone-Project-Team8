@@ -36,6 +36,7 @@ def update_status(name, status, error=None):
     write_meta(name, meta)
 
 def run_potree_conversion(name):
+    print(f"[Worker] Starting PotreeConverter for {name}...")
     try:
         update_status(name, "processing", error=None)
 
@@ -58,7 +59,7 @@ def run_potree_conversion(name):
 
         if result.returncode != 0:
             print(f"[Worker] PotreeConverter failed for {name}: {result.stderr}")
-            update_status(name, "error", error=result.stderr.strip())
+            update_status(name, "error", error=f"stdout: {result.stdout.strip()}\nstderr: {result.stderr.strip()}")
         else:
             print(f"[Worker] Conversion complete: {name}")
             update_status(name, "successful", error=None)
@@ -74,5 +75,6 @@ def worker_loop():
         job_queue.task_done()
 
 def start_worker():
+    print("[Worker] Starting worker thread...")
     thread = threading.Thread(target=worker_loop, daemon=True)
     thread.start()

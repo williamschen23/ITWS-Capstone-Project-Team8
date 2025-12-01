@@ -10,6 +10,7 @@ services:
       - ./backend/data:/app/data  # Persist data
     environment:
       - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
     restart: unless-stopped
 
   frontend:

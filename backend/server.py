@@ -83,7 +83,8 @@ def list_pointclouds():
             with open(mp) as f:
                 meta = json.load(f)
                 status = meta.get("status", "unknown")
-                status_map.setdefault(status, []).append(name)
+                error = meta.get("error", None)
+                status_map.setdefault(status, []).append((name, error))
 
     return jsonify(status_map)
 
@@ -143,12 +144,19 @@ def delete_pointcloud():
     if os.path.exists(raw_path) and os.path.isfile(raw_path):
         os.remove(raw_path)
 
+    job_queue.queue = [job for job in job_queue.queue if job.name != name]
     return jsonify({"message": "Pointcloud deleted", "name": name})
+
+@app.route("/debug/jobqueue")
+def debug_jobqueue():
+    q = list(job_queue.queue)
+    return jsonify([job.name for job in q])
+
+start_worker()
+os.makedirs(RAW_DIR, exist_ok=True)
+os.makedirs(POINTCLOUD_DIR, exist_ok=True) 
 
 if __name__ == '__main__':
     # Enable debug mode based on environment
     debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
-    start_worker()
-    os.makedirs(RAW_DIR, exist_ok=True)
-    os.makedirs(POINTCLOUD_DIR, exist_ok=True) 
     app.run(debug=debug_mode, host='0.0.0.0', port=8080)
