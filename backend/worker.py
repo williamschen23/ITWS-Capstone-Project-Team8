@@ -74,5 +74,6 @@ def worker_loop():
         job_queue.task_done()
 
 def start_worker():
+    print("[Worker] Starting worker thread...")
     thread = threading.Thread(target=worker_loop, daemon=True)
     thread.start()

@@ -143,7 +143,13 @@ def delete_pointcloud():
     if os.path.exists(raw_path) and os.path.isfile(raw_path):
         os.remove(raw_path)
 
+    job_queue.queue = [job for job in job_queue.queue if job.name != name]
     return jsonify({"message": "Pointcloud deleted", "name": name})
+
+@app.route("/debug/jobqueue")
+def debug_jobqueue():
+    q = list(job_queue.queue)
+    return jsonify([job.name for job in q])
 
 if __name__ == '__main__':
     # Enable debug mode based on environment
