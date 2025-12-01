@@ -6,9 +6,14 @@
 
 ## Quick Start
 
-### 1. Build and Start (Development Mode with Hot Reload)
+### 1. Build and Start
+## (Development Mode with Hot Reload)
 ```bash
 docker-compose up --build
+```
+## Production Mode
+```bash
+docker compose -f docker-compose.prod.yml up --build -d
 ```
 
 ### 2. Access the Application
@@ -107,4 +112,4 @@ docker-compose up --build
 - Code changes automatically reload in containers
 - Data volumes are mounted so point clouds persist
 - Model checkpoints in `backend/log/` are preserved
-- Potree files in `backend/potree/` are accessible
+- Potree files in `data/` are accessible

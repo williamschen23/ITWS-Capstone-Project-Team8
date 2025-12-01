@@ -29,6 +29,3 @@ Thumbs.db
 # Environment
 .env
 .env.local
-
-# Data (optional - comment out if you want to include data in image)
-# backend/data/*.laz
