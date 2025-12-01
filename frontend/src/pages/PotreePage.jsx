@@ -19,6 +19,39 @@ export default function PotreePage() {
     }
   }
 
+  async function deletePointCloud(name) {
+    if (!window.confirm(`Are you sure you want to delete point cloud "${name}"?`)) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${BASE_API_URL}/api/pointclouds/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        alert("Delete failed: " + (err.error || "Unknown error"));
+        return false;
+      }
+
+      // Refresh the list after delete
+      await fetchPointClouds();
+
+      // Clear selection if it was the deleted one
+      if (selectedPointCloud === name) {
+        setSelectedPointCloud(null);
+      }
+
+      return true;
+    } catch (error) {
+      alert("Error deleting point cloud: " + error.message);
+      return false;
+    }
+  }
+
   useEffect(() => {
     fetchPointClouds();
 
@@ -48,15 +81,34 @@ export default function PotreePage() {
                 {pointCloudList.map(({ name, status }) => (
                   <li
                     key={name}
-                    className={`cursor-pointer px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
-                      } ${status !== "successful" ? "opacity-50 cursor-not-allowed" : ""}`}
+                    className={`px-4 py-2 flex justify-between items-center hover:bg-gray-300 ${selectedPointCloud === name ? "bg-gray-300 font-bold" : ""
+                      } ${status !== "successful" ? "opacity-50 cursor-default" : "cursor-pointer"}`}
                     onClick={() => {
-                      if (status === "successful") { setSelectedPointCloud(name); }
+                      if (status === "successful") {
+                        setSelectedPointCloud(name);
+                      }
                     }}
                   >
                     <span>{name}</span>
-                    <StatusBadge status={status} />
+
+                    <div className="flex items-center space-x-2">
+                      <StatusBadge status={status} />
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deletePointCloud(name);
+                        }}
+                        className="text-black hover:text-gray-700 focus:outline-none opacity-100 cursor-pointer pointer-events-auto"
+                        aria-label={`Delete point cloud ${name}`}
+                        title="Delete point cloud"
+                        type="button"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </li>
+
                 ))}
               </ul>
             )}
