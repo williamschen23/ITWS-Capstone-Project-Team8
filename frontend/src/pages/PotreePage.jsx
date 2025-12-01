@@ -104,7 +104,7 @@ export default function PotreePage() {
                       {error && <ToolTip type="error" message={error} />}
                       {!error && description && <ToolTip type="info" message={description} />}
 
-                      <button
+                      {status !== "pending" && <button
                         onClick={(e) => {
                           e.stopPropagation();
                           deletePointCloud(name);
@@ -116,6 +116,7 @@ export default function PotreePage() {
                       >
                         🗑️
                       </button>
+                      }
                     </div>
                   </li>
                 ))}
