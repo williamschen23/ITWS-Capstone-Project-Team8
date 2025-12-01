@@ -42,3 +42,8 @@ docker compose -f docker-compose.prod.yml up --build -d
 - Frontend: http://localhost (port 80)
 - Backend: http://localhost:8080
 - Frontend speaks to backend using a `.env` file with `VITE_API_URL`
+
+In order to customize domain for deployment:
+- Run the docker command
+- Make a `.env` file in the root of the directory
+- Add `VITE_API_URL=domain` into the `.env` file
