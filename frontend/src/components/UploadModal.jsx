@@ -12,11 +12,11 @@ export default function UploadModal({ isOpen, onClose, onUpload }) {
     e.preventDefault();
     setError(null);
     if (!name || !file) {
-      setError("Name and LAZ file are required");
+      setError("Name and LAZ or LAS file are required");
       return;
     }
-    if (!file.name.toLowerCase().endsWith(".laz")) {
-      setError("Only .laz files are supported");
+    if (!file.name.toLowerCase().endsWith(".laz") && !file.name.toLowerCase().endsWith(".las")) {
+      setError("Only .laz and .las files are supported");
       return;
     }
 
@@ -91,7 +91,7 @@ export default function UploadModal({ isOpen, onClose, onUpload }) {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">LAZ File *</label>
+            <label className="block mb-1 font-medium">LAS/LAZ File *</label>
             <div className="flex items-center space-x-2">
               <label
                 htmlFor="file"
@@ -102,7 +102,7 @@ export default function UploadModal({ isOpen, onClose, onUpload }) {
               <input
                 id="file"
                 type="file"
-                accept=".laz"
+                accept=".laz,.las"
                 onChange={(e) => setFile(e.target.files[0])}
                 disabled={uploading}
                 required

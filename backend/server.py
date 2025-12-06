@@ -102,11 +102,13 @@ def upload_pointcloud():
     if os.path.exists(pc_dir):
         return jsonify({"error": "A pointcloud with this name already exists"}), 400
 
-    if file.filename.split('.')[-1].lower() != 'laz':
-        return jsonify({"error": "Only .laz files are supported"}), 400
+    extension = file.filename.split('.')[-1].lower()
+
+    if extension != 'laz' and extension != 'las':
+        return jsonify({"error": "Only .laz and .las files are supported"}), 400
 
     # Save raw file
-    raw_path = os.path.join(RAW_DIR, f"{name}.laz")
+    raw_path = os.path.join(RAW_DIR, f"{name}.{extension}")
     file.save(raw_path)
 
     # Create folder
