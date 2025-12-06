@@ -137,6 +137,7 @@ def delete_pointcloud():
 
     pc_dir = os.path.join(POINTCLOUD_DIR, name)
     raw_path = os.path.join(RAW_DIR, f"{name}.laz")
+    raw_path_2 = os.path.join(RAW_DIR, f"{name}.las")
 
     # Remove the pointcloud directory if it exists
     if os.path.exists(pc_dir) and os.path.isdir(pc_dir):
@@ -145,6 +146,9 @@ def delete_pointcloud():
     # Remove the raw file if it exists
     if os.path.exists(raw_path) and os.path.isfile(raw_path):
         os.remove(raw_path)
+
+    if os.path.exists(raw_path_2) and os.path.isfile(raw_path_2):
+        os.remove(raw_path_2)
 
     return jsonify({"message": "Pointcloud deleted", "name": name})
 
