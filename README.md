@@ -1,4 +1,4 @@
-# ITWS 4100 - Team 8 Final Project (Client - Twineer)
+# ITWS 4100 - Team 8 Final Project (Client - Twinner)
 
 A full-stack web application for **uploading**, **classifying**, and **visualizing** 3D point cloud data using AI-powered object recognition and interactive 3D rendering.
 
